@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 def uppercase(str):
     new_str = ""
     for i in range(len(str)):
@@ -8,4 +9,3 @@ def uppercase(str):
         new_str += str[i]
 
     print('{0}'.format(new_str))
-    
