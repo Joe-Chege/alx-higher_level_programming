@@ -1,3 +1,3 @@
 #!/usr/bin/python3
 
-__import__('pyiscool')
+import easy_print_101
