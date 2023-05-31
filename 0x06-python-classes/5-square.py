@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """Define a class Square."""
 
-
 class Square:
     """Represent a square."""
 
@@ -35,4 +34,4 @@ class Square:
             [print("#", end="") for j in range(self.__size)]
             print("")
         if self.__size == 0:
-            print("")
+            print("") 
