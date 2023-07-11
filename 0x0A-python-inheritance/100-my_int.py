@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
+"""Defines a class MyInt that inherits from int."""
+
 
 class MyInt(int):
-    """
-    A custom integer class that inherits from the built-in int class.
-    The == and != operators are inverted.
-    """
+    """Invert int operators == and !=."""
 
-    def print_sorted(self):
-        """prints the list, but sorted in ascending sort"""
-        print(sorted(self)) 
+    def __eq__(self, value):
+        """Override == opeartor with != behavior."""
+        return self.real != value
+
+    def __ne__(self, value):
+        """Override != operator with == behavior."""
+        return self.real == value
