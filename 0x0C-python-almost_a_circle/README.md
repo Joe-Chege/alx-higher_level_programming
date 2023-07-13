@@ -27,8 +27,11 @@ How to handle named arguments in a function
 Resources
 Read or watch:
 
-[*args and **kwargs](https://yasoob.me/2013/08/04/args-and-kwargs-in-python-explained/)
+[*args and **kwargs](https://yasoob.me/2013/08/04/args-and-kwargs-in-python-explained/) 
+/n
 [JSON Python Doc](https://docs.python.org/3/library/json.html)
+/n
 [unittest Doc](https://docs.python.org/3.4/library/unittest.html#module-unittest)
+/n
 [![Alt text](image.png)](https://www.pythonsheets.com/notes/python-tests.html)
 
