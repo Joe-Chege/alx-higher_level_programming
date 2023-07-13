@@ -24,4 +24,11 @@ What is *args and how to use it
 What is **kwargs and how to use it
 How to handle named arguments in a function
 
+Resources
+Read or watch:
+
+[*args and **kwargs](https://yasoob.me/2013/08/04/args-and-kwargs-in-python-explained/)
+[JSON Python Doc](https://docs.python.org/3/library/json.html)
+[unittest Doc](https://docs.python.org/3.4/library/unittest.html#module-unittest)
+[![Alt text](image.png)](https://www.pythonsheets.com/notes/python-tests.html)
 
