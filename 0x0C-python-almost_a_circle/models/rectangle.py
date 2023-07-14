@@ -108,10 +108,16 @@ class Rectangle(Base):
             Setting private attribute
         '''
         self.setter_validation("y", value)
-        
+
         if type(value) != int:
             raise TypeError("y must be an integer")
         if value < 0:
             raise ValueError("y must be >= 0")
 
         self.__y = value
+     def area(self):
+        '''
+            Returns the area of the rectangle
+        '''
+        return (self.height * self.width)
+
