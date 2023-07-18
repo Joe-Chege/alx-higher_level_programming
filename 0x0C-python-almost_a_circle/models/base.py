@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-
-"""Defines the base model class."""
 import json
 import csv
 import turtle
@@ -49,11 +46,9 @@ class Base:
         """
         filename = cls.__name__ + ".json"
         with open(filename, "w") as jsonfile:
-            if list_objs is None:
-                jsonfile.write("[]")
-            else:
-                list_dicts = [o.to_dictionary() for o in list_objs]
-                jsonfile.write(Base.to_json_string(list_dicts))
+            # Use an empty list if list_objs is None or empty
+            list_dicts = [o.to_dictionary() for o in list_objs] if list_objs else []
+            jsonfile.write(cls.to_json_string(list_dicts))
 
     @staticmethod
     def from_json_string(json_string):
@@ -65,7 +60,7 @@ class Base:
             If json_string is None or empty - an empty list.
             Otherwise - the Python list represented by json_string.
         """
-        if json_string is None or json_string == "[]":
+        if not json_string:
             return []
         return json.loads(json_string)
 
@@ -77,35 +72,33 @@ class Base:
             **dictionary (dict): Key/value pairs of attributes to initialize.
         """
         if dictionary and dictionary != {}:
-            if cls.__name__ == "Rectangle":
-                new = cls(1, 1)
-            else:
-                new = cls(1)
-            new.update(**dictionary)
-            return new
+            # Create a new instance of the class and update it with the dictionary
+            new_instance = cls(1, 1) if cls.__name__ == "Rectangle" else cls(1)
+            new_instance.update(**dictionary)
+            return new_instance
 
     @classmethod
     def load_from_file(cls):
-    """Return a list of classes instantiated from a file of JSON strings.
+        """Return a list of classes instantiated from a file of JSON strings.
 
-    Reads from '<cls.__name__>.json'.
+        Reads from '<cls.__name__>.json'.
 
-    Returns:
-        If the file does not exist - an empty list.
-        If the file is empty or contains no data - an empty list.
-        Otherwise - a list of instantiated classes.
-    """
-    filename = str(cls.__name__) + ".json"
-    try:
-        with open(filename, "r") as jsonfile:
-            json_string = jsonfile.read()
-            if not json_string:
-                return []  # Return an empty list if the file is empty
-            list_dicts = Base.from_json_string(json_string)
-            return [cls.create(**d) for d in list_dicts]
-    except IOError:
-        return []
-
+        Returns:
+            If the file does not exist - an empty list.
+            If the file is empty or contains no data - an empty list.
+            Otherwise - a list of instantiated classes.
+        """
+        filename = cls.__name__ + ".json"
+        try:
+            with open(filename, "r") as jsonfile:
+                json_string = jsonfile.read()
+                if not json_string:
+                    return []  # Return an empty list if the file is empty
+                list_dicts = cls.from_json_string(json_string)
+                return [cls.create(**d) for d in list_dicts]
+        except IOError:
+            return []
+        
     @classmethod
     def save_to_file_csv(cls, list_objs):
         """Write the CSV serialization of a list of objects to a file.
