@@ -9,6 +9,7 @@ import inspect
 import io
 import json
 import os
+from models.rectangle import Rectangle
 from contextlib import redirect_stdout
 from models import rectangle
 from models.base import Base

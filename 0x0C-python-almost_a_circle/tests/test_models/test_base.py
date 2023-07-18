@@ -5,10 +5,11 @@ Contains tests for Base class
 
 import unittest
 import inspect
+import sys
+import os
 import pep8
 import json
-from models import base
-Base = base.Base
+from models.base import Base  # Updated
 
 
 class TestBaseDocs(unittest.TestCase):
