@@ -172,4 +172,12 @@ class TestBase(unittest.TestCase):
         self.assertTrue(type(json_l) is list)
         self.assertEqual(json_l, [])
 
-    def test_from_json_string_single_element
+    def test_from_json_string_single_element(self):
+        """Test of Base.from_json_string([ { 'id': 12 }]) exists"""
+        data = [{"id": 12}]
+        json_s = Base.to_json_string(data)
+        self.assertTrue(type(json_s) is str)
+        self.assertEqual(json_s, '[{"id": 12}]')
+
+if __name__ == "__main__":
+    unittest.main()
