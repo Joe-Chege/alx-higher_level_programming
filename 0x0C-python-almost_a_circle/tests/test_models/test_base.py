@@ -10,7 +10,6 @@ import pep8
 import json
 from models.base import Base
 
-
 class TestBaseDocs(unittest.TestCase):
     """Tests to check the documentation and style of Base class"""
     @classmethod
@@ -44,7 +43,6 @@ class TestBaseDocs(unittest.TestCase):
         """Tests for the presence of docstrings in all functions"""
         for func in self.base_funcs:
             self.assertTrue(len(func[1].__doc__) >= 1)
-
 
 class TestBase(unittest.TestCase):
     """Tests to check functionality of Base class"""
@@ -118,3 +116,60 @@ class TestBase(unittest.TestCase):
     def test_fjs_None(self):
         """Tests from_json_string with an empty string"""
         self.assertEqual([], Base.from_json_string(None))
+
+    def test_auto_id_assignment(self):
+        """Test of Base() for assigning automatically an ID exists"""
+        Base._Base__nb_objects = 0
+        b = Base()
+        self.assertEqual(b.id, 1)
+
+    def test_id_assignment_from_previous(self):
+        """Test of Base() for assigning automatically an ID + 1 of the previous exists"""
+        Base._Base__nb_objects = 0
+        b1 = Base()
+        b2 = Base()
+        self.assertEqual(b2.id, 2)
+
+    def test_id_passed(self):
+        """Test of Base(89) saving the ID passed exists"""
+        b = Base(89)
+        self.assertEqual(b.id, 89)
+
+    def test_to_json_string_none(self):
+        """Test of Base.to_json_string(None) exists"""
+        json_s = Base.to_json_string(None)
+        self.assertTrue(type(json_s) is str)
+        self.assertEqual(json_s, "[]")
+
+    def test_to_json_string_empty_list(self):
+        """Test of Base.to_json_string([]) exists"""
+        json_s = Base.to_json_string([])
+        self.assertTrue(type(json_s) is str)
+        self.assertEqual(json_s, "[]")
+
+    def test_to_json_string_single_element(self):
+        """Test of Base.to_json_string([ { 'id': 12 }]) exists"""
+        data = [{"id": 12}]
+        json_s = Base.to_json_string(data)
+        self.assertTrue(type(json_s) is str)
+        self.assertEqual(json_s, '[{"id": 12}]')
+
+    def test_to_json_string_return_type(self):
+        """Test of Base.to_json_string([ { 'id': 12 }]) returning a string exists"""
+        data = [{"id": 12}]
+        json_s = Base.to_json_string(data)
+        self.assertTrue(type(json_s) is str)
+
+    def test_from_json_string_none(self):
+        """Test of Base.from_json_string(None) exists"""
+        json_l = Base.from_json_string(None)
+        self.assertTrue(type(json_l) is list)
+        self.assertEqual(json_l, [])
+
+    def test_from_json_string_empty_list(self):
+        """Test of Base.from_json_string("[]") exists"""
+        json_l = Base.from_json_string("[]")
+        self.assertTrue(type(json_l) is list)
+        self.assertEqual(json_l, [])
+
+    def test_from_json_string_single_element
