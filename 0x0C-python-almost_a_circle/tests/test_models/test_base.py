@@ -119,3 +119,20 @@ class TestBase(unittest.TestCase):
     def test_fjs_None(self):
         """Tests from_json_string with an empty string"""
         self.assertEqual([], Base.from_json_string(None))
+        
+
+    class TestBaseDocs(unittest.TestCase):
+    """Tests for the module docstring"""
+
+    def test_module_docstring(self):
+        """Check if module docstring is present and not empty"""
+        self.assertTrue(len(Base.__doc__) >= 1)
+
+    def test_pep8_conformance_base(self):
+        """Test that models/base.py conforms to PEP8."""
+        style = pep8.StyleGuide(quiet=True)
+        result = style.check_files(["models/base.py"])
+        self.assertEqual(result.total_errors, 0)
+
+if __name__ == "__main__":
+    unittest.main()
