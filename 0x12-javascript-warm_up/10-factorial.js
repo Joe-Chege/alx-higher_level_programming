@@ -1,12 +1,13 @@
 #!/usr/bin/node
 
-function computeFactorial(n) {
-  if (isNaN(n) || n === 0) {
-    return 1;
-  }
+const a = parseInt(process.argv[2]);
 
-  return n * computeFactorial(n - 1);
+function factorial(a) {
+  if (isNaN(a) || a === 1) {
+    return 1;
+  } else {
+    return a * factorial(a - 1);
+  }
 }
 
-const input = Number(process.argv[2]);
-console.log(`Factorial of ${input} is: ${computeFactorial(input)}`);
+console.log(factorial(a));
