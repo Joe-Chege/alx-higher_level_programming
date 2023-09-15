@@ -1,61 +1,54 @@
 #!/usr/bin/python3
 """
-Searches for states in the 'hbtn_0e_0_usa' database based on the provided state name.
+Safely retrieves records from the states table in the hbtn_0e_0_usa database.
 """
 
-import MySQLdb
 import sys
+import MySQLdb
 
-def search_states(mysql_username, mysql_password, database_name, state_name):
+def safe_query_states(username, password, database_name, state_name):
     """
-    Securely search for states in the database based on the provided state name.
+    Safely retrieves records from the states table.
 
     Args:
-        mysql_username (str): The MySQL username.
-        mysql_password (str): The MySQL password.
-        database_name (str): The name of the MySQL database.
-        state_name (str): The name of the state to search for.
+        username (str): MySQL username.
+        password (str): MySQL password.
+        database_name (str): Database name.
+        state_name (str): State name to search.
 
     Returns:
-        A list of all rows from the 'states' table where the 'name' column matches the
-        provided state name, sorted in ascending order by the 'id' column.
+        list: List of matching records.
     """
+    try:
+        # Connect to the MySQL database
+        db = MySQLdb.connect(host="localhost", port=3306, user=username, passwd=password, db=database_name)
 
-    connection = MySQLdb.connect(
-        host='localhost',
-        port=3306,
-        user=mysql_username,
-        password=mysql_password,
-        database=database_name
-    )
+        # Create a cursor object
+        cursor = db.cursor()
 
-    cursor = connection.cursor()
+        # Use parameterized query to retrieve data safely
+        query = "SELECT * FROM states WHERE name=%s ORDER BY id ASC"
+        cursor.execute(query, (state_name,))
 
-    # Use parameterized query to prevent SQL injection
-    sql_query = 'SELECT * FROM states WHERE name = %s ORDER BY id ASC'
-    cursor.execute(sql_query, (state_name,))
+        # Fetch and return results
+        results = cursor.fetchall()
+        return results
 
-    states = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    return states
-
-if __name__ == '__main__':
-    if len(sys.argv) != 5:
-        print("Usage: {} <mysql username> <mysql password> <database name> <state name>".format(sys.argv[0]))
+    except MySQLdb.Error as e:
+        print("MySQL Error: {}".format(e))
         sys.exit(1)
 
-    mysql_username = sys.argv[1]
-    mysql_password = sys.argv[2]
-    database_name = sys.argv[3]
-    state_name = sys.argv[4]
+if __name__ == "__main__":
+    # Check if all required arguments are provided
+    if len(sys.argv) != 5:
+        print("Usage: {} <username> <password> <database_name> <state_name>".format(sys.argv[0]))
+        sys.exit(1)
 
-    # Search for the state in the database
-    states = search_states(mysql_username, mysql_password, database_name, state_name)
+    # Get command-line arguments
+    username, password, database_name, state_name = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 
-    # Display the results
-    print('Results:')
-    for state in states:
-        print(f'{state[0]}: {state[1]}')
+    results = safe_query_states(username, password, database_name, state_name)
+
+    # Display results
+    for row in results:
+        print(row)

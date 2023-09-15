@@ -1,57 +1,55 @@
 #!/usr/bin/python3
 """
-Lists all cities of a specified state from the 'cities' table.
+This script lists all cities of a given state from the hbtn_0e_4_usa database.
 """
 
 import sys
-import MySQLdb
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import sessionmaker
+from model_state import State, Base
+from model_city import City
 
-def list_cities_of_state_securely(mysql_username, mysql_password, database_name, state_name):
+def list_cities_by_state(mysql_username, mysql_password, database_name, state_name):
     """
-    Securely lists all cities of a specified state from the 'cities' table.
+    Lists all cities of a given state from the database.
 
     Args:
-        mysql_username (str): The MySQL username.
-        mysql_password (str): The MySQL password.
-        database_name (str): The name of the MySQL database.
-        state_name (str): The name of the state to search for.
+        mysql_username (str): MySQL username.
+        mysql_password (str): MySQL password.
+        database_name (str): Database name.
+        state_name (str): Name of the state to search for.
 
     Returns:
-        A list of all cities of the specified state from the 'cities' table, sorted in
-        ascending order by the 'id' column.
+        None
     """
+    # Create a SQLAlchemy engine
+    engine = create_engine(f"mysql+mysqldb://{mysql_username}:{mysql_password}@localhost:3306/{database_name}")
+
+    # Create a SQLAlchemy session
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
     try:
-        # Connect to the MySQL server
-        connection = MySQLdb.connect(
-            host='localhost',
-            port=3306,
-            user=mysql_username,
-            passwd=mysql_password,
-            db=database_name
-        )
+        # Query to select cities of the given state
+        stmt = select([City.id, City.name]).join(State).filter(State.name == state_name).order_by(City.id)
 
-        cursor = connection.cursor()
+        # Execute the query and fetch the results
+        results = session.execute(stmt).fetchall()
 
-        # Create a secure SQL query using parameterized queries
-        sql_query = 'SELECT * FROM cities WHERE state_id = (SELECT id FROM states WHERE name = %s) ORDER BY id ASC'
+        # Display the results
+        for result in results:
+            print("({}, '{}')".format(result[0], result[1]))
 
-        cursor.execute(sql_query, (state_name,))
+    except Exception as e:
+        print(f"Error: {e}")
 
-        cities = cursor.fetchall()
+    finally:
+        # Close the session
+        session.close()
 
-        cursor.close()
-        connection.close()
-
-        return cities
-
-    except MySQLdb.Error as e:
-        print("MySQL Error: {}".format(e))
-        sys.exit(1)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Usage: {} <mysql username> <mysql password> <database name> <state name>".format(sys.argv[0]))
+        print("Usage: {} <MySQL username> <MySQL password> <Database name> <State name>".format(sys.argv[0]))
         sys.exit(1)
 
     mysql_username = sys.argv[1]
@@ -59,10 +57,4 @@ if __name__ == '__main__':
     database_name = sys.argv[3]
     state_name = sys.argv[4]
 
-    # List all cities of the specified state securely
-    cities = list_cities_of_state_securely(mysql_username, mysql_password, database_name, state_name)
-
-    # Display the results
-    print('Results:')
-    for city in cities:
-        print(f'{city[0]}: {city[1]}')
+    list_cities_by_state(mysql_username, mysql_password, database_name, state_name)
