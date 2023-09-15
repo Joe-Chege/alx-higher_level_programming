@@ -1,45 +1,57 @@
 #!/usr/bin/python3
-import MySQLdb
+"""
+Lists all states from the database hbtn_0e_0_usa.
+Usage: ./list_states.py <mysql username> <mysql password> <database name>
+"""
 import sys
+import MySQLdb
 
-if __name__ == "__main__":
-    # Check if all required arguments are provided
-    if len(sys.argv) != 4:
-        print("Usage: {} <username> <password> <database>".format(sys.argv[0]))
-        sys.exit(1)
+def list_states(mysql_username, mysql_password, database_name):
+    """
+    Lists all states from the database hbtn_0e_0_usa.
 
-    # Parse command line arguments
-    username = sys.argv[1]
-    password = sys.argv[2]
-    database_name = sys.argv[3]
+    Args:
+        mysql_username (str): The MySQL username.
+        mysql_password (str): The MySQL password.
+        database_name (str): The name of the MySQL database.
+
+    Returns:
+        None.
+    """
 
     try:
         # Connect to the MySQL server running on localhost at port 3306
-        db = MySQLdb.connect(
-            host="localhost",
+        connection = MySQLdb.connect(
+            host='localhost',
             port=3306,
-            user=username,
-            passwd=password,
+            user=mysql_username,
+            passwd=mysql_password,
             db=database_name
         )
 
-        # Create a cursor object to interact with the database
-        cursor = db.cursor()
+        cursor = connection.cursor()
 
-        # Execute the SQL query to retrieve all states sorted by states.id
-        cursor.execute("SELECT * FROM states ORDER BY states.id")
+        # Use a prepared statement to avoid SQL injection.
+        cursor.execute('SELECT * FROM states ORDER BY id ASC')
 
-        # Fetch all the results
-        states = cursor.fetchall()
+        # Fetch all the results and print them to the console.
+        for row in cursor:
+            print(f'({row[0]}, {row[1]})')
 
-        # Display the results
-        for state in states:
-            print(state)
-
-        # Close the cursor and database connection
         cursor.close()
-        db.close()
+        connection.close()
 
     except MySQLdb.Error as e:
         print("MySQL Error: {}".format(e))
         sys.exit(1)
+
+if __name__ == '__main__':
+    if len(sys.argv) != 4:
+        print("Usage: {} <mysql username> <mysql password> <database name>".format(sys.argv[0]))
+        sys.exit(1)
+
+    mysql_username = sys.argv[1]
+    mysql_password = sys.argv[2]
+    database_name = sys.argv[3]
+
+    list_states(mysql_username, mysql_password, database_name)
