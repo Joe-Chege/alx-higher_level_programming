@@ -3,7 +3,6 @@
 Script to list states from a MySQL database.
 """
 
-#!/usr/bin/python3
 import MySQLdb
 import sys
 
