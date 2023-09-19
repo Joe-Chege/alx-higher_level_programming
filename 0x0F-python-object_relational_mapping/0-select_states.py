@@ -32,7 +32,9 @@ def list_states(username, password, database_name):
         cursor = db.cursor()
 
         # Execute the SQL query to retrieve states sorted by id
-        cursor.execute("SELECT * FROM states ORDER BY id")
+        cursor.execute(
+            "SELECT * FROM states ORDER BY id"
+        )
 
         # Fetch all the results
         results = cursor.fetchall()
