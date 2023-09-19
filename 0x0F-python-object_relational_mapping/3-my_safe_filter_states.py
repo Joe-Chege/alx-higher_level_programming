@@ -21,7 +21,13 @@ def safe_query_states(username, password, database_name, state_name):
     """
     try:
         # Connect to the MySQL database
-        db = MySQLdb.connect(host="localhost", port=3306, user=username, passwd=password, db=database_name)
+        db = MySQLdb.connect(
+            host="localhost",
+            port=3306,
+            user=username,
+            passwd=password,
+            db=database_name
+        )
 
         # Create a cursor object
         cursor = db.cursor()

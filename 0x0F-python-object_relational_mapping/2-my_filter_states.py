@@ -1,36 +1,10 @@
 #!/usr/bin/python3
 """
-Script that takes in an argument and displays all values in the states table of
-hbtn_0e_0_usa where name matches the argument.
+Script to filter and display states based on user input in a MySQL database.
 """
 
+import MySQLdb
 import sys
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker
-from model_state import Base, State
-
-def main(username, password, database, state_name):
-    try:
-        # Create a SQLAlchemy engine and connect to the MySQL server
-        engine = create_engine(
-            f'mysql+mysqldb://{username}:{password}@localhost:3306/{database}',
-            pool_pre_ping=True
-        )
-
-        # Create a session to interact with the database
-        Session = sessionmaker(bind=engine)
-        session = Session()
-
-        # Query the database to find matching states
-        matching_states = session.query(State).filter(State.name == state_name).order_by(State.id)
-
-        # Display the results
-        for state in matching_states:
-            print(state)
-
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -42,4 +16,18 @@ if __name__ == "__main__":
     database = sys.argv[3]
     state_name = sys.argv[4]
 
-    main(username, password, database, state_name)
+    try:
+        db = MySQLdb.connect(host="localhost", port=3306, user=username, passwd=password, db=database)
+        cursor = db.cursor()
+        query = "SELECT * FROM states WHERE name='{}' ORDER BY id ASC".format(state_name)
+        cursor.execute(query)
+        states = cursor.fetchall()
+
+        for state in states:
+            print(state)
+
+    except MySQLdb.Error as e:
+        print("MySQL Error: {}".format(e))
+    finally:
+        cursor.close()
+        db.close()
