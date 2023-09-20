@@ -1,46 +1,22 @@
 #!/usr/bin/python3
+""" prints the State object with the name passed as argument from the database
 """
-Lists all State objects and their corresponding City objects from the database hbtn_0e_101_usa
-"""
-
 import sys
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from relationship_state import Base, State
 from relationship_city import City
+from sqlalchemy import (create_engine)
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import relationship
 
-def list_states_and_cities(mysql_username, mysql_password, database_name):
-    """
-    Lists all State objects and their corresponding City objects.
-
-    Args:
-        mysql_username (str): MySQL username.
-        mysql_password (str): MySQL password.
-        database_name (str): Database name.
-
-    Returns:
-        None
-    """
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'.format(
-        mysql_username, mysql_password, database_name))
-
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    states = session.query(State).order_by(State.id).all()
-
-    for state in states:
-        print("{}: {}".format(state.id, state.name))
-        for city in state.cities:
-            print("    {}: {}".format(city.id, city.name))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: {} <mysql_username> <mysql_password> <database_name>".format(sys.argv[0]))
-        sys.exit(1)
-
-    mysql_username = sys.argv[1]
-    mysql_password = sys.argv[2]
-    database_name = sys.argv[3]
-
-    list_states_and_cities(mysql_username, mysql_password, database_name)
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
+                           .format(sys.argv[1], sys.argv[2], sys.argv[3]))
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    for instance in session.query(State).order_by(State.id):
+        print(instance.id, instance.name, sep=": ")
+        for city_ins in instance.cities:
+            print("    ", end="")
+            print(city_ins.id, city_ins.name, sep=": ")
