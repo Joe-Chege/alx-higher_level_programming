@@ -17,6 +17,7 @@ if __name__ == "__main__":
     state_name = sys.argv[4]
 
     try:
+        # Connect to the MySQL server running on localhost at port 3306
         db = MySQLdb.connect(
             host="localhost",
             port=3306,
@@ -25,10 +26,13 @@ if __name__ == "__main__":
             db=database
         )
         cursor = db.cursor()
+
+        # Create and execute the SQL query
         query = "SELECT * FROM states WHERE name='{}' ORDER BY id ASC".format(state_name)
         cursor.execute(query)
         states = cursor.fetchall()
 
+        # Display the results
         for state in states:
             print(state)
 
