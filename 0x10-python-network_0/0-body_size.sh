@@ -1,13 +1,3 @@
 #!/bin/bash
-
-# Get the URL from the command line argument
-URL=$1
-
-# Send a request to the URL and save the response body to a file
-curl -s -o response $URL
-
-# Get the size of the response body in bytes
-SIZE=$(wc -c response)
-
-# Display the size of the response body
-echo $SIZE
+# This script takes in a URL, sends a request, and displays the size of the response body in bytes.
+curl -sI "$1" | grep -i "Content-Length" | awk '{print $2}'
