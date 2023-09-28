@@ -1,0 +1,5 @@
+The time complexity of the 'find_peak' algorithm is O(log(n)), where 'n' is the number of elements in the input list. This complexity is achieved by using a binary search approach.
+
+The algorithm efficiently reduces the search space in half with each iteration, making it highly efficient for finding a peak element in a list of unsorted integers. It avoids unnecessary comparisons and, in the worst case, requires only logarithmic time to locate a peak.
+
+This complexity makes the algorithm suitable for large lists as it scales efficiently with the size of the input.
